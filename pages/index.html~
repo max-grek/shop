@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Title of the document</title>
+  </head>
+  <body>
+    <script>
+      function httpGetAsync(theUrl, callback) {
+	  let xmlHttpReq = new XMLHttpRequest();
+	  xmlHttpReq.onreadystatechange = function () {
+	      if (xmlHttpReq.readyState == 4 && xmlHttpReq.status === 200)
+		  return callback(xmlHttpReq.responseText);
+	  }
+	  xmlHttpReq.open("GET", theUrl, true); // true for asynchronous 
+	  xmlHttpReq.send(null);
+	  
+      }
+
+      function notifySSPAboutCookieID(url, cookie_id) {
+	  var xhr = new XMLHttpRequest();
+	  xhr.open("POST", url, true);
+	  xhr.setRequestHeader('Content-Type', 'application/json');
+	  xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
+	  xhr.send(JSON.stringify({
+	      "cookie_id": cookie_id
+	  }));
+      }
+
+      function getCookieID(cname) {
+	  let name = cname + "=";
+	  let decodedCookie = decodeURIComponent(document.cookie);
+	  let ca = decodedCookie.split(';');
+	  for(let i = 0; i <ca.length; i++) {
+	      let c = ca[i];
+	      while (c.charAt(0) == ' ') {
+		  c = c.substring(1);
+	      }
+	      if (c.indexOf(name) == 0) {
+		  return c.substring(name.length, c.length);
+	      }
+	  }
+	  return "";
+}
+      
+     httpGetAsync('http://localhost:9001/api/cookie', (result) => {
+	  arr = JSON.parse(result);
+	  k = Object.keys(arr)
+	  v = Object.values(arr)
+	  document.cookie = v[0] + '=' + v[1];
+     });
+
+      notifySSPAboutCookieID('http://localhost:9002/api/notify', getCookieID('dsp'))
+      
+    </script>
+  </body>
+</html>
+
