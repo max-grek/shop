@@ -43,13 +43,13 @@
 	  return "";
 }
       
-     httpGetAsync('http://localhost:9001/api/cookie', (result) => {
+     httpGetAsync('http://localhost:9000/api/cookie', (result) => {
 	  arr = JSON.parse(result);
 	  k = Object.keys(arr)
 	  v = Object.values(arr)
 	 document.cookie = v[0] + '=' + v[1];
 	 
-	 notifySSPAboutCookieID('http://localhost:9002/api/notify', getCookieID('dsp'))
+	 notifySSPAboutCookieID('http://localhost:9001/api/notify', getCookieID('dsp'))
      });
       
     </script>
